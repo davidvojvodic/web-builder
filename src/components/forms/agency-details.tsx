@@ -42,9 +42,11 @@ import {
   initUser,
   saveActivityLogs,
   updateAgencyDetails,
+  upsertAgency,
 } from "@/lib/queries";
 import { Button } from "../ui/button";
 import Loading from "../global/loading";
+import { v4 } from "uuid";
 
 type Props = {
   data?: Partial<Agency>;
@@ -123,8 +125,41 @@ const AgencyDetails = ({ data }: Props) => {
 
       newUserData = await initUser({ role: "AGENCY_OWNER" });
 
-      if (!data?.customerId && !customerId) return;
-    } catch (error) {}
+      // if (!data?.customerId && !customerId) return;
+
+      await upsertAgency({
+        id: data?.id ? data.id : v4(),
+        customerId: data?.customerId || customerId || "",
+        address: values.address,
+        agencyLogo: values.agencyLogo,
+        city: values.city,
+        companyPhone: values.companyPhone,
+        country: values.country,
+        name: values.name,
+        whiteLabel: values.whiteLabel,
+        zipCode: values.zipCode,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        companyEmail: values.companyEmail,
+        connectAccountId: "",
+        goal: 5,
+      });
+      toast({
+        title: "Created Agency",
+        description: "Your agency has been created",
+      });
+      return router.refresh();
+      // if (response) {
+      //   return router.refresh();
+      // }
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Oppse!",
+        description: "Could not create your agency",
+      });
+    }
   };
 
   const handleDeleteAgency = async () => {
