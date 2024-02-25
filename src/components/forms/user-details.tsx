@@ -3,11 +3,11 @@ import {
   AuthUserWithAgencySigebarOptionsSubAccounts,
   UserWithPermissionsAndSubAccounts,
 } from "@/lib/types";
+import { useModal } from "@/providers/modal-provider";
 import { SubAccount, User } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
-import { useModal } from "@/providers/modal-provider";
 import {
   changeUserPermissions,
   getAuthUserDetails,
@@ -18,7 +18,6 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { v4 } from "uuid";
 import {
   Card,
   CardContent,
@@ -26,6 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+
 import {
   Form,
   FormControl,
@@ -34,7 +34,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 import FileUpload from "../global/file-upload";
 import { Input } from "../ui/input";
 import {
@@ -45,9 +45,10 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
+import Loading from "../global/loading";
 import { Separator } from "../ui/separator";
 import { Switch } from "../ui/switch";
-import Loading from "../global/loading";
+import { v4 } from "uuid";
 
 type Props = {
   id: string | null;
@@ -56,7 +57,7 @@ type Props = {
   subAccounts?: SubAccount[];
 };
 
-const UserDetails = ({ id, type, userData, subAccounts }: Props) => {
+const UserDetails = ({ id, type, subAccounts, userData }: Props) => {
   const [subAccountPermissions, setSubAccountsPermissions] =
     useState<UserWithPermissionsAndSubAccounts | null>(null);
 
@@ -67,6 +68,8 @@ const UserDetails = ({ id, type, userData, subAccounts }: Props) => {
     useState<AuthUserWithAgencySigebarOptionsSubAccounts | null>(null);
   const { toast } = useToast();
   const router = useRouter();
+
+  //Get authUSerDtails
 
   useEffect(() => {
     if (data.user) {
@@ -205,6 +208,7 @@ const UserDetails = ({ id, type, userData, subAccounts }: Props) => {
       console.log("Error could not submit");
     }
   };
+
   return (
     <Card className="w-full">
       <CardHeader>
