@@ -1,14 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider     = "mysql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
 }
 
 enum Role {
@@ -51,25 +48,6 @@ enum Icon {
   clipboardIcon
 }
 
-enum TriggerTypes {
-  CONTACT_FORM
-}
-
-enum ActionType {
-  CREATE_CONTACT
-}
-
-enum InvitationStatus {
-  ACCEPTED
-  REVOKED
-  PENDING
-}
-
-enum Plan {
-  price_1OYxkqFj9oKEERu1NbKUxXxN
-  price_1OYxkqFj9oKEERu1KfJGWxgN
-}
-
 model User {
   id           String         @id @default(uuid())
   name         String
@@ -81,7 +59,7 @@ model User {
   agencyId     String?
   Agency       Agency?        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   Permissions  Permissions[]
-  Tickets      Ticket[]
+  Ticket       Ticket[]
   Notification Notification[]
 
   @@index([agencyId])
@@ -216,6 +194,10 @@ model Ticket {
   @@index([assignedUserId])
 }
 
+enum TriggerTypes {
+  CONTACT_FORM
+}
+
 model Trigger {
   id           String       @id @default(uuid())
   name         String
@@ -255,6 +237,10 @@ model AutomationInstance {
   active       Boolean    @default(false)
 
   @@index([automationId])
+}
+
+enum ActionType {
+  CREATE_CONTACT
 }
 
 model Action {
@@ -371,6 +357,12 @@ model SubAccountSidebarOption {
   @@index([subAccountId])
 }
 
+enum InvitationStatus {
+  ACCEPTED
+  REVOKED
+  PENDING
+}
+
 model Invitation {
   id       String           @id @default(uuid())
   email    String           @unique
@@ -399,6 +391,11 @@ model Notification {
   @@index([agencyId])
   @@index([subAccountId])
   @@index([userId])
+}
+
+enum Plan {
+  price_1OYxkqFj9oKEERu1NbKUxXxN
+  price_1OYxkqFj9oKEERu1KfJGWxgN
 }
 
 model Subscription {
